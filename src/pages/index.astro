@@ -1,0 +1,23 @@
+---
+import Base from '../layouts/Base.astro';
+import Card from '../components/Card.astro';
+import SummonZone from '../components/SummonZone.astro';
+import ContentSection from '../components/ContentSection.astro';
+
+const links = [
+  { label: 'email', href: 'mailto:ashwinthisaiah@gmail.com' },
+  { label: 'github', href: 'https://github.com/' },
+  { label: 'substack', href: 'https://substack.com/' },
+];
+---
+<Base title="Ashwin Thisaiah">
+  <Card name="Ashwin Thisaiah" title="builds things" links={links} />
+  <SummonZone position="top" />
+  <ContentSection />
+  <SummonZone position="bottom" />
+</Base>
+
+<script>
+  import { initCard } from '../scripts/card.ts';
+  initCard();
+</script>

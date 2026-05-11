@@ -1,7 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
 import Card from '../components/Card.astro';
-import SummonZone from '../components/SummonZone.astro';
 import ContentSection from '../components/ContentSection.astro';
 
 const links = [
@@ -10,11 +9,13 @@ const links = [
   { label: 'substack', href: 'https://substack.com/' },
 ];
 ---
-<Base title="Ashwin Thisaiah">
-  <Card name="Ashwin Thisaiah" title="builds things" links={links} />
-  <SummonZone position="top" />
+<Base title="Nathan Isaiah">
+  <Card name="Nathan Isaiah" title="builds things" links={links} />
+  <div class="scroll-spin" aria-hidden="true"></div>
+  <div class="scroll-slide-out" aria-hidden="true"></div>
   <ContentSection />
-  <SummonZone position="bottom" />
+  <div class="scroll-slide-in" aria-hidden="true"></div>
+  <div class="scroll-infinite" aria-hidden="true"></div>
 </Base>
 
 <script>

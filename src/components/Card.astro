@@ -13,18 +13,14 @@ export interface Props {
 const { name, title, links } = Astro.props;
 ---
 <div class="card-stage">
-  <article class="card" id="card" data-state="A" aria-label="Profile card">
+  <article class="card" id="card" aria-label="Profile card">
     <div class="card__face card__face--front" aria-hidden="false">
       <header>
         <h1>{name}</h1>
         <p class="card__sub">{title}</p>
       </header>
       <footer>
-        <div class="card__controls">
-          <button type="button" class="card__btn" data-flip>flip</button>
-          <button type="button" class="card__btn" data-swipe-aside="right" aria-label="Move card aside">reveal &rarr;</button>
-        </div>
-        <p class="card__hint">scroll to flip · swipe to reveal</p>
+        <p class="card__hint">scroll to flip</p>
       </footer>
     </div>
     <div class="card__face card__face--back" aria-hidden="true">
@@ -34,9 +30,6 @@ const { name, title, links } = Astro.props;
       <ul class="card__links">
         {links.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
       </ul>
-      <footer>
-        <p class="card__hint">scroll to flip back</p>
-      </footer>
     </div>
   </article>
 </div>
@@ -64,26 +57,6 @@ const { name, title, links } = Astro.props;
     font-size: 0.7rem;
     opacity: 0.45;
     letter-spacing: 0.05em;
-  }
-  .card__controls {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
-  .card__btn {
-    font: inherit;
-    font-size: 0.75rem;
-    background: transparent;
-    color: #111;
-    border: 1px solid #ccc;
-    padding: 0.35rem 0.7rem;
-    cursor: pointer;
-    letter-spacing: 0.05em;
-  }
-  .card__btn:hover,
-  .card__btn:focus-visible {
-    border-color: #111;
-    outline: none;
   }
   .card__links {
     list-style: none;

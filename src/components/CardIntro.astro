@@ -1,0 +1,21 @@
+---
+export interface Props {
+  name: string;
+  slotIndex: number;
+  active?: boolean;
+  photo?: string;
+  photoAlt?: string;
+}
+
+const { name, slotIndex, active = false, photo, photoAlt } = Astro.props;
+---
+<div
+  class:list={['face-slot', 'card-intro', { 'face-slot--active': active }]}
+  data-slot={slotIndex}
+  aria-hidden={active ? 'false' : 'true'}
+>
+  <div class="card-intro__photo">
+    {photo && <img src={photo} alt={photoAlt ?? name} />}
+  </div>
+  <h1 class="card-intro__name">{name}</h1>
+</div>

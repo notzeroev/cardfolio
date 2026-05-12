@@ -13,30 +13,66 @@ html, body {
 
 body { overflow-x: hidden; }
 
-.scroll-spin,
-.scroll-slide-out,
-.scroll-slide-in {
-  min-height: 100vh;
-  min-height: 100dvh;
+.scroll-track {
+  min-height: 400vh;
+  min-height: 400dvh;
 }
 
-.scroll-infinite {
-  min-height: 1000vh;
-  min-height: 1000dvh;
+.site-header {
+  position: fixed;
+  top: 1.5rem;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.site-header__text {
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: #aaa;
+  font-variant-numeric: tabular-nums;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .scroll-spin,
-  .scroll-slide-out,
-  .scroll-slide-in,
-  .scroll-infinite {
-    display: none;
-  }
-  .card-stage {
-    position: relative;
-    height: 100vh;
-    height: 100dvh;
-  }
+.card-nav {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+}
+.card-nav ul {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  padding: 0;
+  margin: 0;
+  pointer-events: auto;
+}
+.card-nav__btn {
+  background: transparent;
+  border: none;
+  color: #777;
+  font: inherit;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  cursor: pointer;
+  padding: 0.5rem 0.75rem;
+  transition: color 0.15s ease;
+}
+.card-nav__btn:hover,
+.card-nav__btn:focus-visible {
+  color: #f6f5f0;
+  outline: none;
+}
+.card-nav__btn[aria-current="true"] {
+  color: #f6f5f0;
 }
 
 .card-stage {
@@ -65,37 +101,148 @@ body { overflow-x: hidden; }
   border-radius: 16px;
   background: #f6f5f0;
   color: #111;
-  padding: 28px;
   backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
 }
 
 .card__face--back { transform: rotateY(180deg); }
 
-.content {
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 30vh 24px;
+/* Base slot layout — applies to every face-slot (intro, section, future variants) */
+.face-slot {
+  position: absolute;
+  inset: 0;
+  padding: 2rem 1.75rem;
+  display: flex;
+  flex-direction: column;
+  opacity: 0;
+}
+.face-slot--active {
+  opacity: 1;
 }
 
-.content section + section { margin-top: 6rem; }
-
-.content h2 {
-  font-size: 0.8rem;
-  letter-spacing: 0.15em;
+/* Section variant — title at top, body at bottom */
+.card-section {
+  justify-content: space-between;
+}
+.card-section__title {
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  margin: 0 0 1rem;
+  margin: 0;
+  color: #777;
+}
+.card-section__body {
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+.card-section__body p {
+  margin: 0 0 0.75rem;
+}
+.card-section__body p:last-child {
+  margin-bottom: 0;
+}
+.card-section__body ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+.card-section__body ul.list-bullets li {
+  padding-left: 0.9rem;
+  position: relative;
+  line-height: 1.45;
+}
+.card-section__body ul.list-bullets li::before {
+  content: '·';
+  position: absolute;
+  left: 0;
   color: #888;
 }
-
-.content p { margin: 0 0 1rem; }
-
-.content a {
-  color: #f6f5f0;
+.card-section__body a {
+  color: inherit;
   text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.2);
+  text-decoration-thickness: 1px;
   text-underline-offset: 3px;
 }
+.card-section__body a:hover,
+.card-section__body a:focus-visible {
+  text-decoration-color: #111;
+  outline: none;
+}
 
+.card-project h3 {
+  font-size: 1.2rem;
+  margin: 0 0 0.6rem;
+  letter-spacing: -0.005em;
+  font-weight: 500;
+  color: #111;
+}
+.card-project p {
+  margin: 0;
+}
+
+/* Intro variant — photo on top, name caption at bottom */
+.card-intro {
+  padding: 1.25rem 1.25rem 1.5rem;
+  gap: 1rem;
+  justify-content: space-between;
+}
+.card-intro__photo {
+  background: #d8d4c8;
+  border-radius: 6px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.card-intro__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-intro__name {
+  margin: 0;
+  font-size: 1.4rem;
+  letter-spacing: -0.01em;
+  text-align: center;
+  font-weight: 500;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-track { display: none; }
+  .card-stage {
+    position: relative;
+    height: auto;
+    padding: 10vh 24px;
+    display: block;
+    perspective: none;
+  }
+  .card {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+    aspect-ratio: auto;
+    transform: none !important;
+    transform-style: flat;
+  }
+  .card__face {
+    position: relative;
+    transform: none !important;
+    backface-visibility: visible;
+    background: transparent;
+    color: inherit;
+    box-shadow: none;
+    border-radius: 0;
+    overflow: visible;
+  }
+  .face-slot {
+    position: relative;
+    opacity: 1 !important;
+    inset: auto;
+    margin-bottom: 4rem;
+    padding: 0;
+  }
+}

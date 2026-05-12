@@ -1,0 +1,28 @@
+---
+export interface NavItem {
+  label: string;
+  targetSlot: number;
+}
+
+export interface Props {
+  items: NavItem[];
+}
+
+const { items } = Astro.props;
+---
+<nav class="card-nav" aria-label="Sections">
+  <ul>
+    {items.map((item) => (
+      <li>
+        <button
+          type="button"
+          class="card-nav__btn"
+          data-nav-target={item.targetSlot}
+          aria-current="false"
+        >
+          {item.label}
+        </button>
+      </li>
+    ))}
+  </ul>
+</nav>

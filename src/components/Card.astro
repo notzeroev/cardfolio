@@ -1,80 +1,53 @@
 ---
+import CardIntro from './CardIntro.astro';
+import CardSection from './CardSection.astro';
+
 export interface CardLink {
   label: string;
   href: string;
 }
 
-export interface Props {
+export interface Project {
   name: string;
-  title: string;
-  links: CardLink[];
+  body: string;
 }
 
-const { name, title, links } = Astro.props;
+export interface Props {
+  name: string;
+  about: string;
+  projects: Project[];
+  links: CardLink[];
+  photo?: string;
+}
+
+const { name, about, projects, links, photo } = Astro.props;
 ---
 <div class="card-stage">
   <article class="card" id="card" aria-label="Profile card">
     <div class="card__face card__face--front" aria-hidden="false">
-      <header>
-        <h1>{name}</h1>
-        <p class="card__sub">{title}</p>
-      </header>
-      <footer>
-        <p class="card__hint">scroll to flip</p>
-      </footer>
+      <CardIntro name={name} photo={photo} slotIndex={0} active={true} />
+      <CardSection title="projects" slotIndex={2}>
+        <div class="card-project">
+          <h3>{projects[0].name}</h3>
+          <p>{projects[0].body}</p>
+        </div>
+      </CardSection>
+      <CardSection title="connect" slotIndex={4}>
+        <ul>
+          {links.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
+        </ul>
+      </CardSection>
     </div>
     <div class="card__face card__face--back" aria-hidden="true">
-      <header>
-        <h2>contact</h2>
-      </header>
-      <ul class="card__links">
-        {links.map((l) => (<li><a href={l.href}>{l.label}</a></li>))}
-      </ul>
+      <CardSection title="about" slotIndex={1} active={true}>
+        <p>{about}</p>
+      </CardSection>
+      <CardSection title="projects" slotIndex={3}>
+        <div class="card-project">
+          <h3>{projects[1].name}</h3>
+          <p>{projects[1].body}</p>
+        </div>
+      </CardSection>
     </div>
   </article>
 </div>
-
-<style>
-  .card h1 {
-    font-size: 1.4rem;
-    margin: 0;
-    letter-spacing: 0.02em;
-  }
-  .card h2 {
-    font-size: 0.75rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    margin: 0;
-    color: #555;
-  }
-  .card__sub {
-    margin: 0.4rem 0 0;
-    opacity: 0.65;
-    font-size: 0.9rem;
-  }
-  .card__hint {
-    margin: 0;
-    font-size: 0.7rem;
-    opacity: 0.45;
-    letter-spacing: 0.05em;
-  }
-  .card__links {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 0.4rem;
-  }
-  .card__links a {
-    color: inherit;
-    text-decoration: none;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
-    padding-bottom: 2px;
-  }
-  .card__links a:hover,
-  .card__links a:focus-visible {
-    border-color: #111;
-    outline: none;
-  }
-</style>

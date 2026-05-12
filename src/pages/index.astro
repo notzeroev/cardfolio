@@ -1,21 +1,47 @@
 ---
 import Base from '../layouts/Base.astro';
 import Card from '../components/Card.astro';
-import ContentSection from '../components/ContentSection.astro';
+import CardNav from '../components/CardNav.astro';
 
 const links = [
   { label: 'email', href: 'mailto:ashwinthisaiah@gmail.com' },
   { label: 'github', href: 'https://github.com/' },
   { label: 'substack', href: 'https://substack.com/' },
 ];
+
+const projects = [
+  {
+    name: 'redback-racing',
+    body: 'Placeholder description for redback-racing. A sentence or two about what it is, the stack, and your role.',
+  },
+  {
+    name: 'sideway',
+    body: 'Placeholder description for sideway. Same shape — what it is, what you built, what shipped.',
+  },
+];
+
+const about = 'Placeholder. A couple of sentences about who you are and what you do go here.';
+
+// Nav points to the *first* slot of each logical section.
+// Adding a third project would push `connect` to targetSlot: 5.
+const navItems = [
+  { label: 'about', targetSlot: 1 },
+  { label: 'projects', targetSlot: 2 },
+  { label: 'connect', targetSlot: 4 },
+];
 ---
 <Base title="Nathan Isaiah">
-  <Card name="Nathan Isaiah" title="builds things" links={links} />
-  <div class="scroll-spin" aria-hidden="true"></div>
-  <div class="scroll-slide-out" aria-hidden="true"></div>
-  <ContentSection />
-  <div class="scroll-slide-in" aria-hidden="true"></div>
-  <div class="scroll-infinite" aria-hidden="true"></div>
+  <header class="site-header" aria-hidden="true">
+    <span class="site-header__text" id="header-text">Nathan Isaiah</span>
+  </header>
+  <Card
+    name="Nathan Isaiah"
+    about={about}
+    projects={projects}
+    links={links}
+  />
+  <CardNav items={navItems} />
+  <div class="scroll-track" aria-hidden="true"></div>
 </Base>
 
 <script>

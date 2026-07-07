@@ -1,5 +1,10 @@
 *, *::before, *::after { box-sizing: border-box; }
 
+:root {
+  /* Titles that aren't nav / the name use Averia; nav + name stay monospace. */
+  --font-title: "Averia Serif Libre", Georgia, serif;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -13,9 +18,9 @@ html, body {
 
 body { overflow-x: hidden; }
 
-.scroll-track {
-  min-height: 400vh;
-  min-height: 400dvh;
+.scroll-anchor {
+  min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .site-header {
@@ -34,6 +39,17 @@ body { overflow-x: hidden; }
   text-transform: uppercase;
   color: #aaa;
   font-variant-numeric: tabular-nums;
+  pointer-events: auto;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  transition: color 0.2s ease;
+}
+.site-header__text:hover,
+.site-header__text:focus-visible {
+  color: #fff;
 }
 
 .card-nav {
@@ -99,7 +115,7 @@ body { overflow-x: hidden; }
   position: absolute;
   inset: 0;
   border-radius: 16px;
-  background: #f6f5f0;
+  background: #fcfcfc;
   color: #111;
   backface-visibility: hidden;
   box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
@@ -108,29 +124,33 @@ body { overflow-x: hidden; }
 
 .card__face--back { transform: rotateY(180deg); }
 
-/* Base slot layout — applies to every face-slot (intro, section, future variants) */
+/* Base slot layout — the constrained box every content item lives in.
+   It owns only size / clipping / visibility; padding and inner layout are
+   the content's business, so each slot can express itself freely. */
 .face-slot {
   position: absolute;
   inset: 0;
-  padding: 2rem 1.75rem;
   display: flex;
   flex-direction: column;
   opacity: 0;
+  /* Hidden slots stack on top of the visible one — keep them from
+     intercepting clicks / text selection meant for the active slot. */
+  pointer-events: none;
 }
-.face-slot--active {
+.face-slot--active,
+.face-slot[aria-hidden="false"] {
   opacity: 1;
+  pointer-events: auto;
 }
 
-/* Section variant — title at top, body at bottom */
+/* Section variant — a text panel that fills its slot with comfortable insets. */
 .card-section {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
   justify-content: space-between;
-}
-.card-section__title {
-  font-size: 0.7rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  margin: 0;
-  color: #777;
+  padding: 2rem 1.75rem;
 }
 .card-section__body {
   font-size: 0.95rem;
@@ -150,69 +170,88 @@ body { overflow-x: hidden; }
   flex-direction: column;
   gap: 0.55rem;
 }
-.card-section__body ul.list-bullets li {
-  padding-left: 0.9rem;
-  position: relative;
-  line-height: 1.45;
-}
-.card-section__body ul.list-bullets li::before {
-  content: '·';
-  position: absolute;
-  left: 0;
-  color: #888;
-}
+/* Old-school web links: classic blue, purple once visited. */
 .card-section__body a {
-  color: inherit;
+  color: #0000ee;
   text-decoration: underline;
-  text-decoration-color: rgba(0, 0, 0, 0.2);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 3px;
+  text-underline-offset: 2px;
 }
-.card-section__body a:hover,
+.card-section__body a:visited {
+  color: #551a8b;
+}
+.card-section__body a:active {
+  color: #ee0000;
+}
 .card-section__body a:focus-visible {
-  text-decoration-color: #111;
   outline: none;
+  text-decoration-thickness: 2px;
+}
+.card-notes {
+  margin-top: 1.5rem;
+}
+.card-note {
+  display: block;
+  color: rgba(0, 0, 0, 0.55);
 }
 
 .card-project h3 {
+  font-family: var(--font-title);
   font-size: 1.2rem;
   margin: 0 0 0.6rem;
   letter-spacing: -0.005em;
-  font-weight: 500;
+  font-weight: 300;
   color: #111;
 }
 .card-project p {
   margin: 0;
 }
-
-/* Intro variant — photo on top, name caption at bottom */
-.card-intro {
-  padding: 1.25rem 1.25rem 1.5rem;
-  gap: 1rem;
-  justify-content: space-between;
+.card-project + .card-project {
+  margin-top: 1.5rem;
 }
-.card-intro__photo {
-  background: #d8d4c8;
-  border-radius: 6px;
+
+/* Intro variant — heading up top, full-bleed photo filling the rest. */
+.card-intro {
   flex: 1;
   min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
   overflow: hidden;
+}
+.card-intro__name {
+  font-family: var(--font-title);
+  margin: 0;
+  padding: 2.5rem 2rem 0;
+  font-size: 2.9rem;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  font-weight: 300;
+  color: #111;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35em;
+}
+/* Nudge any line of the heading inward — e.g. <span class="indent">. */
+.card-intro__name .indent {
+  padding-left: 1.9em;
+}
+.card-intro__photo {
+  overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  -webkit-mask-image: linear-gradient(to bottom, transparent 0, #000 20%);
+  mask-image: linear-gradient(to bottom, transparent 0, #000 20%);
 }
 .card-intro__photo img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-}
-.card-intro__name {
-  margin: 0;
-  font-size: 1.4rem;
-  letter-spacing: -0.01em;
-  text-align: center;
-  font-weight: 500;
+  object-position: center bottom;
+  filter: grayscale(1);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-track { display: none; }
+  .scroll-anchor { display: none; }
   .card-stage {
     position: relative;
     height: auto;

@@ -24,29 +24,11 @@ function startHeaderScramble() {
 }
 
 function scrollToSlot(slotIndex: number) {
-  const slots = document.querySelectorAll<HTMLElement>('[data-slot]');
-  if (slotIndex < 0 || slotIndex >= slots.length) return;
-
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (reducedMotion) {
-    slots[slotIndex].scrollIntoView({ behavior: 'smooth', block: 'start' });
-    return;
-  }
-
-  const flips = slots.length - 1;
-  if (flips <= 0) return;
-
-  const scrollRange = document.documentElement.scrollHeight - window.innerHeight;
-
-  // Bail if we're already at (or snapping to) this slot. Without this guard,
-  // re-clicking the active section re-fires smooth-scroll, which fights
-  // ScrollTrigger snap and produces oscillation.
-  const currentSlot = Math.round((window.scrollY / scrollRange) * flips);
-  if (currentSlot === slotIndex) return;
-
-  const target = (slotIndex / flips) * scrollRange;
-  window.scrollTo({ top: target, behavior: 'smooth' });
+  const target = reducedMotion
+    ? document.querySelector<HTMLElement>(`[data-slot="${slotIndex}"]`)
+    : document.getElementById(`slot-${slotIndex}`);
+  target?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function updateNavActive(currentSlot: number) {
@@ -78,6 +60,12 @@ export function initCard() {
   const totalSections = slots.length;
   if (totalSections < 2) return;
   const flips = totalSections - 1;
+
+  // Clicking the header title returns to the first slot (the photo intro).
+  const headerText = document.getElementById('header-text');
+  if (headerText) {
+    headerText.addEventListener('click', () => scrollToSlot(0));
+  }
 
   // Nav click handlers (work regardless of motion preference)
   document.querySelectorAll<HTMLButtonElement>('[data-nav-target]').forEach((btn) => {
@@ -124,7 +112,15 @@ export function initCard() {
         invalidateOnRefresh: true,
         fastScrollEnd: true,
         snap: {
-          snapTo: 1 / flips,
+          // Snap based on the rendered rotation, not scroll position.
+          // Each flat face sits at a multiple of 180°; midpoints are at +90°.
+          // Crossing 90° toward the next face commits; anything less reverts.
+          // Reading the visual angle decouples the threshold from scrub lag.
+          snapTo: () => {
+            const angle = gsap.getProperty(card, 'rotationY') as number;
+            const slot = Math.max(0, Math.min(flips, Math.round(angle / 180)));
+            return slot / flips;
+          },
           duration: { min: 0.25, max: 0.6 },
           delay: 0.15,
           ease: 'power2.inOut',
@@ -132,11 +128,19 @@ export function initCard() {
       },
     });
 
-    tl.to(card, {
-      rotationY: flips * 180,
-      duration: flips,
-      onUpdate,
-    });
+    // Friction "gutters" at the very ends of the spin. The first and last
+    // GUTTER_DEG of rotation use an exponential ease so the card resists
+    // hard near the boundary — most of the rotation happens in the last 10%
+    // of the gutter's scroll, giving a "stuck then release" feel. Middle is
+    // linear, so slots 1–3 still land at progress 0.25/0.5/0.75.
+    const GUTTER_DEG = 60;
+    const totalDeg = flips * 180;
+    const gutterTime = (GUTTER_DEG / totalDeg) * flips;
+    const middleTime = flips - 2 * gutterTime;
+
+    tl.to(card, { rotationY: GUTTER_DEG, duration: gutterTime, ease: 'expo.in', onUpdate });
+    tl.to(card, { rotationY: totalDeg - GUTTER_DEG, duration: middleTime, ease: 'none', onUpdate });
+    tl.to(card, { rotationY: totalDeg, duration: gutterTime, ease: 'expo.out', onUpdate });
 
     for (let u = 1; u <= totalSections - 2; u++) {
       const position = u + 0.5;

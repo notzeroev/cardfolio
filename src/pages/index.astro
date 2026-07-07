@@ -3,45 +3,80 @@ import Base from '../layouts/Base.astro';
 import Card from '../components/Card.astro';
 import CardNav from '../components/CardNav.astro';
 
-const links = [
-  { label: 'email', href: 'mailto:ashwinthisaiah@gmail.com' },
-  { label: 'github', href: 'https://github.com/' },
-  { label: 'substack', href: 'https://substack.com/' },
-];
-
-const projects = [
-  {
-    name: 'redback-racing',
-    body: 'Placeholder description for redback-racing. A sentence or two about what it is, the stack, and your role.',
-  },
-  {
-    name: 'sideway',
-    body: 'Placeholder description for sideway. Same shape — what it is, what you built, what shipped.',
-  },
-];
-
-const about = 'Placeholder. A couple of sentences about who you are and what you do go here.';
-
 // Nav points to the *first* slot of each logical section.
-// Adding a third project would push `connect` to targetSlot: 5.
 const navItems = [
   { label: 'about', targetSlot: 1 },
   { label: 'projects', targetSlot: 2 },
+  { label: 'writing', targetSlot: 3 },
   { label: 'connect', targetSlot: 4 },
 ];
 ---
 <Base title="Nathan Isaiah">
-  <header class="site-header" aria-hidden="true">
-    <span class="site-header__text" id="header-text">Nathan Isaiah</span>
+  <header class="site-header">
+    <button type="button" class="site-header__text" id="header-text" aria-label="Back to top">Nathan Isaiah</button>
   </header>
-  <Card
-    name="Nathan Isaiah"
-    about={about}
-    projects={projects}
-    links={links}
-  />
+  <Card>
+    {/* slot-0 · front · intro. Anything goes here — this one's a heading + photo. */}
+    <div slot="slot-0" class="card-intro">
+      <h1 class="card-intro__name">
+        <span>Hello,</span>
+        <span class="indent">I'm Nathan</span>
+      </h1>
+      <div class="card-intro__photo">
+        <img src="/pfp.jpeg" alt="Nathan Isaiah" />
+      </div>
+    </div>
+
+    {/* slot-1 · back · about */}
+    <section slot="slot-1" class="card-section" aria-label="about">
+      <div class="card-section__body">
+        <p>I study Computer Science at UNSW in Sydney.</p>
+        <p>I've been programming since I was 15, mostly building for the web.</p>
+        <p>Of late I've been thinking about the future of interfaces. Ideas like <a href="https://x.com/AravSrinivas/status/1924670485960261731" target="_blank" rel="noopener noreferrer">generative ui</a> push me to reimagine what's possible.</p>
+        <p>In my free time I play valorant for my <a href="https://www.instagram.com/unsw_esports/p/DZglx7Ok7BN/?hl=en&img_index=2" target="_blank" rel="noopener noreferrer">university team</a>, watch <a href="https://letterboxd.com/zeroev/" target="_blank" rel="noopener noreferrer">film</a>, and have recently been trying to back into reading.</p>
+
+      </div>
+    </section>
+
+    {/* slot-2 · front · personal projects */}
+    <section slot="slot-2" class="card-section" aria-label="projects">
+      <div class="card-section__body">
+        <div class="card-project">
+          <p>The team that I'm a part of at <a href="https://redbackracing.com" target="_blank" rel="noopener noreferrer">Redback Racing</a> maintain <a href="https://spyder.redbackracing.com" target="_blank" rel="noopener noreferrer">Spyder</a>, our in-house telemetry platform.</p>
+        </div>
+        <!-- <div class="card-project">
+          <p>I worked on rebranding <a href="https://sideway.ai" target="_blank" rel="noopener noreferrer">sideway</a>, which was a nice return to my design roots.</p>
+        </div> -->
+        <div class="card-project">
+          <p>Unhappy with the state of map picks in smaller valorant tournaments, my agents and I created <a href="https://veto.zeroev.me" target="_blank" rel="noopener noreferrer">vet0</a>.</p>
+        </div>
+      </div>
+    </section>
+
+    {/* slot-3 · back · writing */}
+    <section slot="slot-3" class="card-section" aria-label="writing">
+      <div class="card-section__body">
+        <p class="card-note">Maybe soon.</p>
+      </div>
+    </section>
+
+    {/* slot-4 · front · connect */}
+    <section slot="slot-4" class="card-section" aria-label="connect">
+      <div class="card-section__body">
+        <ul>
+          <li><a href="mailto:nathanaaron117@gmail.com" target="_blank" rel="noopener noreferrer">email</a></li>
+          <li><a href="https://github.com/notzeroev" target="_blank" rel="noopener noreferrer">github</a></li>
+          <li><a href="/ni_resume.pdf" target="_blank" rel="noopener noreferrer">cv</a></li>
+        </ul>
+      </div>
+    </section>
+  </Card>
   <CardNav items={navItems} />
-  <div class="scroll-track" aria-hidden="true"></div>
+  <div class="scroll-anchor" id="slot-0" aria-hidden="true"></div>
+  <div class="scroll-anchor" id="slot-1" aria-hidden="true"></div>
+  <div class="scroll-anchor" id="slot-2" aria-hidden="true"></div>
+  <div class="scroll-anchor" id="slot-3" aria-hidden="true"></div>
+  <div class="scroll-anchor" id="slot-4" aria-hidden="true"></div>
 </Base>
 
 <script>

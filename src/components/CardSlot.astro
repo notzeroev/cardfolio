@@ -1,0 +1,17 @@
+---
+// A single content slot: a fixed-size box the size of the card face.
+// Whatever you drop inside is clipped to (and free to fill) that space.
+export interface Props {
+  index: number;
+  active?: boolean;
+}
+
+const { index, active = false } = Astro.props;
+---
+<div
+  class:list={['face-slot', { 'face-slot--active': active }]}
+  data-slot={index}
+  aria-hidden={active ? 'false' : 'true'}
+>
+  <slot />
+</div>

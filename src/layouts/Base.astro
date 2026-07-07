@@ -4,18 +4,56 @@ import '../styles/global.css';
 export interface Props {
   title: string;
   description?: string;
+  image?: string;
 }
 
-const { title, description = 'Portfolio of Nathan Isaiah' } = Astro.props;
+const {
+  title,
+  description = 'Nathan Isaiah — Computer Science student at UNSW building for the web.',
+  image = '/pfp.jpeg',
+} = Astro.props;
+
+const siteUrl = 'https://zeroev.me';
+const canonical = new URL(Astro.url.pathname, siteUrl).href;
+const ogImage = new URL(image, siteUrl).href;
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content="Nathan Isaiah" />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#f6f5f0" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon32.png" />
+    <link rel="icon" type="image/png" sizes="64x64" href="/favicon64.png" />
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/favicon64.png" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Nathan Isaiah" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:ital,wght@0,300;0,400;0,700;1,400&display=swap"
+    />
   </head>
   <body>
     <slot />

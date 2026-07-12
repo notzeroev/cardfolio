@@ -12,6 +12,19 @@
   --deck-w: min(420px, 80vw);
   --deck-h: calc(var(--deck-w) * 7 / 5);
   --gap-above: max(calc((100svh - var(--deck-h)) * 0.6), 6rem);
+
+  /* Section accents, borrowed from vet0 — worn full-strength by both the
+     nav highlights and the card backgrounds. The intro stays white. */
+  --accent-0: #fcfcfc;                   /* intro · white */
+  --accent-1: oklch(0.645 0.246 16.439); /* about · red */
+  --accent-2: oklch(0.77 0.2 131);       /* projects · green */
+  --accent-3: oklch(0.828 0.189 84.429); /* writing · amber */
+  --accent-4: oklch(0.71 0.13 215);      /* links · blue (vet0 neutral) */
+  --card-0: var(--accent-0);
+  --card-1: var(--accent-1);
+  --card-2: var(--accent-2);
+  --card-3: var(--accent-3);
+  --card-4: var(--accent-4);
 }
 
 html, body {
@@ -69,7 +82,7 @@ body { overflow-x: hidden; }
 .site-header__text:hover,
 .site-header__text:focus-visible,
 .site-header__text[aria-current="true"] {
-  color: #f6f5f0;
+  color: var(--accent-0);
 }
 
 .card-nav ul {
@@ -94,11 +107,28 @@ body { overflow-x: hidden; }
 }
 .card-nav__btn:hover,
 .card-nav__btn:focus-visible {
-  color: #f6f5f0;
   outline: none;
 }
-.card-nav__btn[aria-current="true"] {
-  color: #f6f5f0;
+/* Each nav item lights up in its card's tint, on hover and while active. */
+.card-nav__btn[data-nav-target="1"]:hover,
+.card-nav__btn[data-nav-target="1"]:focus-visible,
+.card-nav__btn[data-nav-target="1"][aria-current="true"] {
+  color: var(--accent-1);
+}
+.card-nav__btn[data-nav-target="2"]:hover,
+.card-nav__btn[data-nav-target="2"]:focus-visible,
+.card-nav__btn[data-nav-target="2"][aria-current="true"] {
+  color: var(--accent-2);
+}
+.card-nav__btn[data-nav-target="3"]:hover,
+.card-nav__btn[data-nav-target="3"]:focus-visible,
+.card-nav__btn[data-nav-target="3"][aria-current="true"] {
+  color: var(--accent-3);
+}
+.card-nav__btn[data-nav-target="4"]:hover,
+.card-nav__btn[data-nav-target="4"]:focus-visible,
+.card-nav__btn[data-nav-target="4"][aria-current="true"] {
+  color: var(--accent-4);
 }
 
 .card-stage {
@@ -140,6 +170,13 @@ body { overflow-x: hidden; }
 /* Only the front card is interactive — cards behind it shouldn't catch
    clicks / text selection through the peeking edges. */
 .deck-card[inert] { pointer-events: none; }
+
+/* Each section card gets a pale neon wash — barely-there tints that keep
+   the white-paper feel. The intro stays plain white. */
+.deck-card[data-slot="1"] { background: var(--card-1); }
+.deck-card[data-slot="2"] { background: var(--card-2); }
+.deck-card[data-slot="3"] { background: var(--card-3); }
+.deck-card[data-slot="4"] { background: var(--card-4); }
 
 /* Entrance: first paint is just a white outline of the card; it fills in,
    then the content fades in. Pure CSS with `both` fill, so it starts on
@@ -212,17 +249,17 @@ body { overflow-x: hidden; }
   flex-direction: column;
   gap: 0.55rem;
 }
-/* Old-school web links: classic blue, purple once visited. */
+/* Links read as white against the strong card colors, visited included. */
 .card-section__body a {
-  color: #0000ee;
+  color: #fcfcfc;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 .card-section__body a:visited {
-  color: #551a8b;
+  color: #fcfcfc;
 }
 .card-section__body a:active {
-  color: #ee0000;
+  color: rgba(252, 252, 252, 0.7);
 }
 .card-section__body a:focus-visible {
   outline: none;

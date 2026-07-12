@@ -38,6 +38,10 @@ function updateNavActive(currentSlot: number) {
     const target = parseInt(btn.dataset.navTarget ?? '', 10);
     btn.setAttribute('aria-current', target === currentSlot ? 'true' : 'false');
   });
+  // The name doubles as the hero's nav entry.
+  document
+    .getElementById('header-text')
+    ?.setAttribute('aria-current', currentSlot === 0 ? 'true' : 'false');
 }
 
 export function initCard() {
@@ -166,7 +170,11 @@ export function initCard() {
     const tryStep = (dir: 1 | -1) => {
       if (animating) return;
       animating = true;
-      step(dir).then(() => {
+      const tl = step(dir);
+      // step() already reordered the stack — highlight the destination now
+      // rather than after the card lands.
+      updateNavActive(slotOf(cards[order[0]]));
+      tl.then(() => {
         animating = false;
         settle();
       });
@@ -189,6 +197,7 @@ export function initCard() {
       const speed = 1 + (steps - 1) * 0.1;
 
       animating = true;
+      updateNavActive(slot);
       (async () => {
         // Overlap the steps: the next card starts pulling out while the
         // previous one is still settling, so the jump reads as one fluid

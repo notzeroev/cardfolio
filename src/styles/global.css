@@ -28,14 +28,18 @@ body { overflow-x: hidden; }
   body { touch-action: none; }
 }
 
+/* Header: name with the nav stacked beneath it, both centered. */
 .site-header {
   position: fixed;
   top: 1.5rem;
-  left: 0;
-  right: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(420px, 90vw);
   z-index: 20;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
   pointer-events: none;
 }
 .site-header__text {
@@ -53,24 +57,15 @@ body { overflow-x: hidden; }
   transition: color 0.2s ease;
 }
 .site-header__text:hover,
-.site-header__text:focus-visible {
-  color: #fff;
+.site-header__text:focus-visible,
+.site-header__text[aria-current="true"] {
+  color: #f6f5f0;
 }
 
-.card-nav {
-  position: fixed;
-  bottom: 1.5rem;
-  left: 0;
-  right: 0;
-  z-index: 20;
-  display: flex;
-  justify-content: center;
-  pointer-events: none;
-}
 .card-nav ul {
   list-style: none;
   display: flex;
-  gap: 1rem;
+  gap: 0.9rem;
   padding: 0;
   margin: 0;
   pointer-events: auto;
@@ -84,7 +79,7 @@ body { overflow-x: hidden; }
   text-transform: uppercase;
   letter-spacing: 0.18em;
   cursor: pointer;
-  padding: 0.5rem 0.75rem;
+  padding: 0;
   transition: color 0.15s ease;
 }
 .card-nav__btn:hover,
@@ -99,6 +94,8 @@ body { overflow-x: hidden; }
 .card-stage {
   position: fixed;
   inset: 0;
+  /* Padding drops the centered card below the header. */
+  padding-top: 5rem;
   display: grid;
   place-items: center;
   pointer-events: none;
@@ -152,9 +149,8 @@ body { overflow-x: hidden; }
   .deck-card > * {
     animation: deck-card-content 0.5s ease 0.65s both;
   }
-  /* The header and nav arrive with the content, not before. */
-  .site-header,
-  .card-nav {
+  /* The header (name + nav) arrives with the content, not before. */
+  .site-header {
     animation: deck-card-content 0.5s ease 0.65s both;
   }
 }

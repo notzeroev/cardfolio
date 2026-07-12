@@ -3,6 +3,15 @@
 :root {
   /* Titles that aren't nav / the name use Averia; nav + name stay monospace. */
   --font-title: "Averia Serif Libre", Georgia, serif;
+
+  /* Deck geometry, shared between the card stage and the header. The free
+     space around the card splits 60/40 — a bit more above than below — and
+     the header centers itself in the top gap. On short screens the gap
+     never drops below 6rem, so the header always has headroom even if that
+     pushes the card past center. */
+  --deck-w: min(420px, 80vw);
+  --deck-h: calc(var(--deck-w) * 7 / 5);
+  --gap-above: max(calc((100svh - var(--deck-h)) * 0.6), 6rem);
 }
 
 html, body {
@@ -28,12 +37,13 @@ body { overflow-x: hidden; }
   body { touch-action: none; }
 }
 
-/* Header: name with the nav stacked beneath it, both centered. */
+/* Header: name with the nav stacked beneath it, centered in the space
+   between the top of the screen and the card. */
 .site-header {
   position: fixed;
-  top: 1.5rem;
+  top: calc(var(--gap-above) / 2);
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   width: min(420px, 90vw);
   z-index: 20;
   display: flex;
@@ -94,16 +104,17 @@ body { overflow-x: hidden; }
 .card-stage {
   position: fixed;
   inset: 0;
-  /* Padding drops the centered card below the header. */
-  padding-top: 5rem;
+  /* The card sits exactly --gap-above from the top; whatever is left of
+     the screen becomes the (smaller) gap below. */
+  padding-top: var(--gap-above);
   display: grid;
-  place-items: center;
+  place-items: start center;
   pointer-events: none;
   z-index: 10;
 }
 
 .deck {
-  width: min(420px, 80vw);
+  width: var(--deck-w);
   aspect-ratio: 5 / 7;
   position: relative;
 }

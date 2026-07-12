@@ -188,13 +188,13 @@ export function initCard() {
       if (depth === 0) return;
 
       // Direction follows slot order: later slots shuffle forward, earlier
-      // slots shuffle backward — never the wraparound shortcut. Longer
-      // jumps take proportionally longer, but each extra card adds a 10%
-      // speed-up so multi-card hops feel a touch brisker.
+      // slots shuffle backward — never the wraparound shortcut.
       const currentSlot = slotOf(cards[order[0]]);
       const dir: 1 | -1 = slot > currentSlot ? 1 : -1;
       const steps = dir === 1 ? depth : total - depth;
-      const speed = 1 + (steps - 1) * 0.1;
+      // The riffle decelerates: early cards flick past quickly, each one a
+      // touch slower, and the last settles at normal single-step speed.
+      const speedAt = (s: number) => 1 + (steps - 1 - s) * 0.25;
 
       animating = true;
       updateNavActive(slot);
@@ -204,7 +204,7 @@ export function initCard() {
         // riffle instead of separate shuffles. The last step runs to
         // completion before input unlocks.
         for (let s = 0; s < steps; s++) {
-          const tl = step(dir, speed);
+          const tl = step(dir, speedAt(s));
           const isLast = s === steps - 1;
           await new Promise<void>((resolve) => {
             if (isLast) tl.then(() => resolve());

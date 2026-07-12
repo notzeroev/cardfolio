@@ -18,9 +18,14 @@ html, body {
 
 body { overflow-x: hidden; }
 
-.scroll-anchor {
-  min-height: 100vh;
-  min-height: 100dvh;
+/* The deck absorbs scroll itself — the page never scrolls when animating. */
+@media (prefers-reduced-motion: no-preference) {
+  html, body {
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+  }
+  body { touch-action: none; }
 }
 
 .site-header {
@@ -73,7 +78,7 @@ body { overflow-x: hidden; }
 .card-nav__btn {
   background: transparent;
   border: none;
-  color: #777;
+  color: #999;
   font: inherit;
   font-size: 0.65rem;
   text-transform: uppercase;
@@ -98,50 +103,80 @@ body { overflow-x: hidden; }
   place-items: center;
   pointer-events: none;
   z-index: 10;
-  perspective: 1500px;
 }
 
-.card {
+.deck {
   width: min(420px, 80vw);
   aspect-ratio: 5 / 7;
   position: relative;
-  transform-style: preserve-3d;
-  pointer-events: auto;
-  will-change: transform;
-  touch-action: pan-y;
 }
 
-.card__face {
-  position: absolute;
-  inset: 0;
-  border-radius: 16px;
-  background: #fcfcfc;
-  color: #111;
-  backface-visibility: hidden;
-  box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
-  overflow: hidden;
-}
-
-.card__face--back { transform: rotateY(180deg); }
-
-/* Base slot layout — the constrained box every content item lives in.
-   It owns only size / clipping / visibility; padding and inner layout are
-   the content's business, so each slot can express itself freely. */
-.face-slot {
+/* One card in the deck — a fixed-size white card the content fills.
+   It owns only size / clipping / stacking; padding and inner layout are
+   the content's business, so each card can express itself freely. */
+.deck-card {
   position: absolute;
   inset: 0;
   display: flex;
   flex-direction: column;
-  opacity: 0;
-  /* Hidden slots stack on top of the visible one — keep them from
-     intercepting clicks / text selection meant for the active slot. */
-  pointer-events: none;
-}
-.face-slot--active,
-.face-slot[aria-hidden="false"] {
-  opacity: 1;
+  border-radius: 16px;
+  background: #fcfcfc;
+  color: #111;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.35),
+    0 10px 28px -16px rgba(0, 0, 0, 0.45);
+  overflow: hidden;
   pointer-events: auto;
+  will-change: transform;
 }
+/* Only the front card is interactive — cards behind it shouldn't catch
+   clicks / text selection through the peeking edges. */
+.deck-card[inert] { pointer-events: none; }
+
+/* Entrance: first paint is just a white outline of the card; it fills in,
+   then the content fades in. Pure CSS with `both` fill, so it starts on
+   first paint and never waits on the JS bundle. */
+@media (prefers-reduced-motion: no-preference) {
+  .deck-card {
+    animation: deck-card-fill 0.4s ease 0.35s both;
+  }
+  /* Only the front card draws the skeleton outline — with it on every card,
+     the deck's depth scaling turns the stack into concentric rings. */
+  .deck-card:first-child {
+    outline: 1px solid transparent;
+    outline-offset: -1px;
+    animation:
+      deck-card-fill 0.4s ease 0.35s both,
+      deck-card-outline 0.4s ease 0.35s both;
+  }
+  .deck-card > * {
+    animation: deck-card-content 0.5s ease 0.65s both;
+  }
+  /* The header and nav arrive with the content, not before. */
+  .site-header,
+  .card-nav {
+    animation: deck-card-content 0.5s ease 0.65s both;
+  }
+}
+@keyframes deck-card-fill {
+  from {
+    background-color: transparent;
+    box-shadow: none;
+  }
+}
+@keyframes deck-card-outline {
+  from { outline-color: rgba(252, 252, 252, 0.6); }
+}
+@keyframes deck-card-content {
+  from { opacity: 0; }
+}
+/* Pre-JS stacking: first card on top, in slot order behind it. */
+.deck-card:nth-child(1) { z-index: 6; }
+.deck-card:nth-child(2) { z-index: 5; }
+.deck-card:nth-child(3) { z-index: 4; }
+.deck-card:nth-child(4) { z-index: 3; }
+.deck-card:nth-child(5) { z-index: 2; }
+.deck-card:nth-child(6) { z-index: 1; }
 
 /* Section variant — a text panel that fills its slot with comfortable insets. */
 .card-section {
@@ -191,7 +226,7 @@ body { overflow-x: hidden; }
 }
 .card-note {
   display: block;
-  color: rgba(0, 0, 0, 0.55);
+  color: rgba(0, 0, 0, 0.62);
 }
 
 .card-project h3 {
@@ -251,37 +286,28 @@ body { overflow-x: hidden; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .scroll-anchor { display: none; }
   .card-stage {
     position: relative;
     height: auto;
     padding: 10vh 24px;
     display: block;
-    perspective: none;
   }
-  .card {
+  .deck {
     width: 100%;
     max-width: 720px;
     margin: 0 auto;
     aspect-ratio: auto;
-    transform: none !important;
-    transform-style: flat;
   }
-  .card__face {
+  .deck-card {
     position: relative;
+    inset: auto;
     transform: none !important;
-    backface-visibility: visible;
     background: transparent;
     color: inherit;
     box-shadow: none;
     border-radius: 0;
     overflow: visible;
-  }
-  .face-slot {
-    position: relative;
-    opacity: 1 !important;
-    inset: auto;
+    pointer-events: auto;
     margin-bottom: 4rem;
-    padding: 0;
   }
 }

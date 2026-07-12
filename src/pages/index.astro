@@ -15,8 +15,9 @@ const navItems = [
   <header class="site-header">
     <button type="button" class="site-header__text" id="header-text" aria-label="Back to top">Nathan Isaiah</button>
   </header>
+  <main>
   <Card>
-    {/* slot-0 · front · intro. Anything goes here — this one's a heading + photo. */}
+    {/* slot-0 · intro. Anything goes here — this one's a heading + photo. */}
     <div slot="slot-0" class="card-intro">
       <h1 class="card-intro__name">
         <span>Hello,</span>
@@ -27,18 +28,18 @@ const navItems = [
       </div>
     </div>
 
-    {/* slot-1 · back · about */}
+    {/* slot-1 · about */}
     <section slot="slot-1" class="card-section" aria-label="about">
       <div class="card-section__body">
         <p>I study Computer Science at UNSW in Sydney.</p>
         <p>I've been programming since I was 15, mostly building for the web.</p>
         <p>Of late I've been thinking about the future of interfaces. Ideas like <a href="https://x.com/AravSrinivas/status/1924670485960261731" target="_blank" rel="noopener noreferrer">generative ui</a> push me to reimagine what's possible.</p>
-        <p>In my free time I play valorant for my <a href="https://www.instagram.com/unsw_esports/p/DZglx7Ok7BN/?hl=en&img_index=2" target="_blank" rel="noopener noreferrer">university team</a>, watch <a href="https://letterboxd.com/zeroev/" target="_blank" rel="noopener noreferrer">film</a>, and have recently been trying to back into reading.</p>
+        <p>In my free time I do a little <a href="https://www.twitch.tv/notzeroev" target="_blank" rel="noopener noreferrer">gaming</a>, watch <a href="https://letterboxd.com/zeroev/" target="_blank" rel="noopener noreferrer">film</a>, and have recently been trying to back into reading.</p>
 
       </div>
     </section>
 
-    {/* slot-2 · front · personal projects */}
+    {/* slot-2 · personal projects */}
     <section slot="slot-2" class="card-section" aria-label="projects">
       <div class="card-section__body">
         <div class="card-project">
@@ -53,14 +54,14 @@ const navItems = [
       </div>
     </section>
 
-    {/* slot-3 · back · writing */}
+    {/* slot-3 · writing */}
     <section slot="slot-3" class="card-section" aria-label="writing">
       <div class="card-section__body">
         <p class="card-note">Maybe soon.</p>
       </div>
     </section>
 
-    {/* slot-4 · front · connect */}
+    {/* slot-4 · connect */}
     <section slot="slot-4" class="card-section" aria-label="connect">
       <div class="card-section__body">
         <ul>
@@ -71,12 +72,8 @@ const navItems = [
       </div>
     </section>
   </Card>
+  </main>
   <CardNav items={navItems} />
-  <div class="scroll-anchor" id="slot-0" aria-hidden="true"></div>
-  <div class="scroll-anchor" id="slot-1" aria-hidden="true"></div>
-  <div class="scroll-anchor" id="slot-2" aria-hidden="true"></div>
-  <div class="scroll-anchor" id="slot-3" aria-hidden="true"></div>
-  <div class="scroll-anchor" id="slot-4" aria-hidden="true"></div>
 </Base>
 
 <script>
